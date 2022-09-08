@@ -23,7 +23,6 @@ function GetJeraList(_){
 
   y=List[Era].End.Year-List[Era].Start.Year + 1
   u=List[Era].Start.Year + Year - 1
-  console.log(u)
 
   if(Year==y && Month.End>=List[Era].End.Month){
     Day.End=List[Era].End.Day
