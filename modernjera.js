@@ -9,9 +9,14 @@ function GetJeraList(_){
   },u,Year,Month={Now:1,Start:1,End:12},y,Day={Start:1,End:31},Era,JeraYearList=[],I
 
   if('Era' in _){
-    Era=_.Era.toLowerCase()
-  }else{
-    Era=List.keys[List.keys.length-1]
+    var Erastr = _.Era
+    if(Erastr==='明治')Erastr='meiji'
+    else if(Erastr==='大正')Erastr='taisho'
+    else if(Erastr==='昭和')Erastr='showa'
+    else if(Erastr==='平成')Erastr='heisei'
+    else if(Erastr==='令和')Erastr='reiwa'
+    else if(!List.keys.includes(Erastr))Erastr='reiwa'
+    Era=Erastr?Erastr.toLowerCase():null
   }
   if('Month' in _){
     Month.Now=Math.min(Math.max(1,_.Month),12);
@@ -20,7 +25,15 @@ function GetJeraList(_){
     if(typeof _.Year != 'number')if(_.Year.includes('元')){Year=1}
     Year=Math.max(1,_.Year)
   }
-
+  if('Era' in _ && 'Date' in _){
+    if(typeof _.Date == 'object' && 'getDay' in _.Date && Era !== null){
+      const Erakey = Era
+      const idate=_.Date
+      List[Erakey].End.Year = idate.getFullYear()
+      List[Erakey].End.Month = idate.getMonth()+1
+      List[Erakey].End.Day = idate.getDate()
+    }
+  }
   y=List[Era].End.Year-List[Era].Start.Year + 1
   u=List[Era].Start.Year + Year - 1
 
@@ -58,10 +71,14 @@ function GetJeraList(_){
   }
 }
 
-function GetMonthsList(era,year){
-  return GetJeraList({Era:era,Year:year}).List.Month
+function GetYearList(era,maxdate){
+  return GetJeraList({Era:era,Date:maxdate}).List.Year
 }
 
-function GetDaysList(era,year,month){
-  return GetJeraList({Era:era,Year:year,Month:month}).List.Day
+function GetMonthsList(era,year,maxdate){
+  return GetJeraList({Era:era,Year:year,Date:maxdate}).List.Month
+}
+
+function GetDaysList(era,year,month,maxdate){
+  return GetJeraList({Era:era,Year:year,Month:month,Date:maxdate}).List.Day
 }
