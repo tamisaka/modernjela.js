@@ -6,7 +6,7 @@ function GetJeraList(_){
    showa :{Start:{Year:1926,Month:12,Day:25},End:{Year:1989,Month: 1,Day: 7}},
    heisei:{Start:{Year:1989,Month: 1,Day: 8},End:{Year:2019,Month: 4,Day:30}},
    reiwa :{Start:{Year:2019,Month: 5,Day: 1},End:{Year:2122,Month:12,Day:31}}
-  },u,Year,Month={Now:1,Start:1,End:12},y,Day={Start:1,End:31},Era,JeraYearList=[],I
+  },u,Year,Month={Now:1,Start:1,End:12},y,Day={Start:1,End:31},Era,JeraYearList=[],I,days,leap
 
   if('Era' in _){
     var Erastr = _.Era
@@ -45,18 +45,23 @@ function GetJeraList(_){
     Day.Start=List[Era].Start.Day
     Month.Start=List[Era].Start.Month
   }
+  leap = u%400<1||(u%100&&u%4<1)
+  days = [31,leap?29:28,31,30,31,30,31,31,30,31,30,31]
+
   if(Year!==y || (Year===y && Month.Now !== Month.End) ){
-    Day.End = [31,u%400==0||(u%100&&u%4==0)?29:28,31,30,31,30,31,31,30,31,30,31][Month.Now-1]
+    Day.End = days[Month.Now-1]
   }
   for(I=0;I<y;I++){JeraYearList.push(I+1)}
   if('0' in JeraYearList){JeraYearList[0]='元'}
 
   return {
     Year:{
+      isLeap:leap,
       Start:List[Era].Start.Year,
       End:List[Era].End.Year,
     },
     Month:{
+      Days:days,
       Start:Month.Start,
       End:Month.End
     },
@@ -82,4 +87,13 @@ function GetMonthsList(era,year,maxdate){
 
 function GetDaysList(era,year,month,maxdate){
   return GetJeraList({Era:era,Year:year,Month:month,Date:maxdate}).List.Day
+}
+
+function GetMonthDays(era,year,month,maxdate){
+  month = Math.max(1,Math.min(12,month || 1))
+  return GetJeraList({Era:era,Year:year,Month:month,Date:maxdate}).Month.Days[month-1]
+}
+
+function isLeapYear(era,year,maxdate){
+  return GetJeraList({Era:era,Year:year,Date:maxdate}).Year.isLeap
 }
