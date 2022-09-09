@@ -37,7 +37,6 @@ function GetJeraList(_){
   y=List[Era].End.Year-List[Era].Start.Year + 1
   u=List[Era].Start.Year + Year - 1
 
-  Day.End = [31,u%400==0||(u%100&&u%4==0)?29:28,28,31,30,31,30,31,31,30,31,30,31][Month.Now-1]
   if(Year==y && Month.End>=List[Era].End.Month){
     Day.End=List[Era].End.Day
     Month.End=List[Era].End.Month
@@ -46,7 +45,9 @@ function GetJeraList(_){
     Day.Start=List[Era].Start.Day
     Month.Start=List[Era].Start.Month
   }
-
+  if(Year!==y || (Year===y && Month.Now !== Month.End) ){
+    Day.End = [31,u%400==0||(u%100&&u%4==0)?29:28,31,30,31,30,31,31,30,31,30,31][Month.Now-1]
+  }
   for(I=0;I<y;I++){JeraYearList.push(I+1)}
   if('0' in JeraYearList){JeraYearList[0]='元'}
 
