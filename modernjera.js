@@ -27,7 +27,17 @@ function GetJeraList(_){
     Month.Start=Month.Now
   }
   if('Year' in _){
-    if(typeof _.Year != 'number')if(_.Year.includes('元')){Year=1}
+    if(typeof _.Year == 'string'){
+      if(_.Year.includes('元')){
+        _.Year=1
+      }
+      else if(_.Year.includes('年')){
+        _.Year = _.Year.replace('年','')|0
+        if(typeof _.Year != 'number'){
+          return null
+        }
+      }
+    }
     Year=Math.max(1,_.Year)
   }
   if('Era' in _ && 'Date' in _){
